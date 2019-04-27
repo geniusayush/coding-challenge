@@ -46,3 +46,11 @@ CP10 AVAILABLE
 ## Deliverables:
 Zipped archive with the implementation and the documentation on how to call the API (Swagger/Postman collection/text description).
 Please add any details about your ideas and considerations to this README and add it to the repository.
+
+
+##How to run 
+1) run mvn clean install 
+2) cd target 
+3) java -jar ubicity-1.0-SNAPSHOT.jar 
+4) go to http://localhost:8080/swagger-ui.html
+ There you will encounter swagger page where you can play with the API
