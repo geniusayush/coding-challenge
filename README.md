@@ -54,3 +54,20 @@ Please add any details about your ideas and considerations to this README and ad
 3) java -jar ubicity-1.0-SNAPSHOT.jar 
 4) go to http://localhost:8080/swagger-ui.html
  There you will encounter swagger page where you can play with the API
+ 
+## Implementation Idea
+* The code uses a hashmap to keep track of the charging points and their status . 
+* For the cases where cars have to be changed from slow to fast or reverse two queues are used to track the order .
+* The FastQueue is a FIFO while the slow queue is a LIFO .
+* Together they make sure that the cars entering last have the priority for fast charge.
+* The code uses thread safe implementation by using data structures from concurrent package  and syncronized functions
+* Care has been taken to keep the system in stable phase while handling car state changes
+
+## Future Scalabilty tips.
+The code can be applied to real time scenario by using an event driven mechanisms using Reactive Spring,and Kafka.
+* The data in the repository  can be stored in No-SQL database (redis ).
+* The client Service will only be responsible for its own car.
+* In  case it needs power from other cars it can send a messsage to the routing system kafka topic  to allocate power to it.
+* Similarly if the car is leaving the system it will send a message to the routing system saying that it is relinquishing power .
+The routing system  will then allocate this to someone else 
+* this project can be made scalable using spring cloud/docker on cloud systems

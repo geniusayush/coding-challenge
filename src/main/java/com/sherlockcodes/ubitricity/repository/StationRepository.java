@@ -1,69 +1,63 @@
 package com.sherlockcodes.ubitricity.repository;
 
+import com.sherlockcodes.ubitricity.enums.ChargeMode;
 import org.springframework.stereotype.Repository;
 
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.stream.Collectors;
 
 @Repository
 public class StationRepository {
-    private ConcurrentHashMap<Integer, Integer> map = new ConcurrentHashMap<>();
-    private CopyOnWriteArrayList<Integer> fastQueue = new CopyOnWriteArrayList<>();
-    private CopyOnWriteArrayList<Integer> slowQueue = new CopyOnWriteArrayList<>();
 
-
+    private final ConcurrentHashMap<Integer, ChargeMode> map = new ConcurrentHashMap<>();
+    private final CopyOnWriteArrayList<Integer> fastQueue = new CopyOnWriteArrayList<>();
+    private final CopyOnWriteArrayList<Integer> slowQueue = new CopyOnWriteArrayList<>();
 
     public StationRepository() {
         for (int i = 1; i <= 10; i++) {
-            map.put(i, 0);
+            map.put(i, ChargeMode.AVAILABLE);
         }
     }
 
-
-    public synchronized void markAsSlowCharge(int n) {
+    public  void markAsSlowCharge(int n) {
         slowQueue.add(n);
     }
 
-    public synchronized void markAsFastCharge(int n) {
+    public  void markAsFastCharge(int n) {
         fastQueue.add(n);
     }
-
-
-
-
-    public synchronized boolean canDivertPower() {
-        if (fastQueue.size() == 0) return false;
-        return true;
-    }
-    public synchronized void donatePower() {
-        int index = slowQueue.remove(slowQueue.size() - 1);
-        map.put(index, 2);
-        fastQueue.add(index);
-    }
-
 
     public boolean anySlowChargeExists() {
         return slowQueue.size() != 0;
     }
 
-    public void unMarkasFastCharge(int n) {
-        fastQueue.remove(n);
+    public void unMarkAsFastCharge(int n) {
+        fastQueue.remove(fastQueue.indexOf(n));
     }
 
     public void unMarkAsSlowCharge(int n) {
-        slowQueue.remove(n);
+        slowQueue.remove(slowQueue.indexOf(n));
     }
 
-
-    public ConcurrentHashMap<Integer, Integer> getStatus() {
-        return map;
+    public synchronized Map<Integer, String> getStatus() {
+        return map.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, entry -> entry.getValue().getText()));
     }
 
-    public int getStationValue(int n) {
+    public ChargeMode getStationValue(int n) {
         return map.get(n);
     }
-    public synchronized int unPlugVehicle(int n) {
-        return map.put(n,0);
 
+    public Integer getCArToBeChargedSlowly() {
+        return fastQueue.remove(0);
+    }
+
+    public ChargeMode addVehicle(int n, ChargeMode fastCharge) {
+        return map.put(n, fastCharge);
+    }
+
+    public int getCarToBeUpgraded() {
+        return slowQueue.remove(slowQueue.size() - 1);
     }
 }

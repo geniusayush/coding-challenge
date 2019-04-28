@@ -1,6 +1,5 @@
 package com.sherlockcodes.ubitricity;
 
-import com.sherlockcodes.ubitricity.state.ParkState;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cache.annotation.EnableCaching;
@@ -15,8 +14,6 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 import java.util.HashSet;
 import java.util.Set;
-import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 @SpringBootApplication()
 @EnableSwagger2
@@ -24,7 +21,6 @@ import java.util.concurrent.CopyOnWriteArrayList;
 public class App {
     public static void main(String[] args) throws Exception {
         SpringApplication.run(App.class, args);
-
     }
 
     @Bean
@@ -49,7 +45,7 @@ public class App {
     }
 
     private ApiInfo apiInfo() {
-        ApiInfo apiInfo = new ApiInfo(
+        return new ApiInfo(
                 "Spring Boot demo  REST API",
                 "Spring Boot demo REST API for ubitricity",
                 "1.0",
@@ -57,15 +53,11 @@ public class App {
                 new Contact("Ayush Kulshrestha", "https://sherlockcode.blogspot.com", "geniusayush@gmail.com"),
                 "Apache License Version 2.0",
                 "https://www.apache.org/licenses/LICENSE-2.0");
-        return apiInfo;
     }
-    @Bean(name = "parkState")
-    public ParkState parkState(){
+
+    @Bean
+    public ParkState getState() {
         return new ParkState();
-    }
-    @Bean(name = "waitQ")
-    public ConcurrentLinkedQueue<Integer> waitQ(){
-        return new ConcurrentLinkedQueue<>();
     }
 
 }
