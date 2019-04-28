@@ -1,5 +1,6 @@
 package com.sherlockcodes.ubitricity;
 
+import com.sherlockcodes.ubitricity.state.ParkState;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cache.annotation.EnableCaching;
@@ -14,6 +15,8 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 @SpringBootApplication()
 @EnableSwagger2
@@ -56,4 +59,13 @@ public class App {
                 "https://www.apache.org/licenses/LICENSE-2.0");
         return apiInfo;
     }
+    @Bean(name = "parkState")
+    public ParkState parkState(){
+        return new ParkState();
+    }
+    @Bean(name = "waitQ")
+    public ConcurrentLinkedQueue<Integer> waitQ(){
+        return new ConcurrentLinkedQueue<>();
+    }
+
 }

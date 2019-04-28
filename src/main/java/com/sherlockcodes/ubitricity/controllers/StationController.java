@@ -9,6 +9,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.concurrent.ConcurrentHashMap;
+
 @RestController
 @RequestMapping("/station")
 @Api(value = "manage station", description = "basic controller that lets users manage stations")
@@ -19,7 +21,7 @@ public class StationController {
     @Autowired
     StationService generatorService;
 
-    @PostMapping("/{number}")
+    @PostMapping("/car/{number}")
     @ApiOperation(value = "plug in a vehicle at station number given in the path")
     @ResponseBody
     @ApiResponses(value = {
@@ -34,7 +36,7 @@ public class StationController {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-    @DeleteMapping("/{number}")
+    @DeleteMapping("/car/{number}")
     @ApiOperation(value = "unplug a vehicle at station number given in the path")
     @ResponseBody
     @ApiResponses(value = {
@@ -57,7 +59,7 @@ public class StationController {
             @ApiResponse(code = 400, message = "Bad Request"),
             @ApiResponse(code = 500, message = "Server Exception")
     })
-    public ResponseEntity getStatus() {
+    public ResponseEntity<ConcurrentHashMap<Integer,Integer>> getStatus() {
         return ResponseEntity.ok(generatorService.getStatus());
     }
 

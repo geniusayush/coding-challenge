@@ -4,22 +4,29 @@ import com.sherlockcodes.ubitricity.repository.StationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
+
 @Service
 public class StationService {
 
     @Autowired
-    StationRepository repository;
+    private StationRepository repository;
+
+    private AtomicInteger currentCount;
+    private AtomicInteger currentCars;
 
     public void add(int chargingPoint) throws Exception {
-        if (!repository.isSlotFree(chargingPoint)) throw new Exception();
-        if (repository.isPowerAvailable()) {
-            repository.givePowerFromReserve(chargingPoint);
+        if (repository.getStationValue(chargingPoint)!=0) throw new Exception();
+
+        if (currentCount.get()<100) {
+            givePowerFromReserve(chargingPoint);
         } else {
             if (repository.canDivertPower()) {
-                repository.divertPowerFromOtherCars(chargingPoint);
+                divertPowerFromOtherCars(chargingPoint);
                 if (!repository.canDivertPower()) repository.markAsSlowCharge(chargingPoint);
                 else {
-                    repository.divertPowerFromOtherCars(chargingPoint);
+                    divertPowerFromOtherCars(chargingPoint);
                     repository.markAsFastCharge(chargingPoint);
                 }
             }
@@ -28,8 +35,12 @@ public class StationService {
 
 
     public void delete(int n) throws Exception {
-        if (repository.isSlotFree(n)) throw new Exception();
+
+        if (repository.getStationValue(n)==0) throw new Exception();
+
         int vehiclePower = repository.unPlugVehicle(n);
+        currentCars.decrementAndGet();
+        currentCount.addAndGet(-1*vehiclePower);
         if (vehiclePower == 1) {
             repository.unMarkAsSlowCharge(n);
             repository.donatePower();
@@ -43,7 +54,22 @@ public class StationService {
     }
 
 
-    public Object getStatus() {
-       return repository.getStatus();
+    public ConcurrentHashMap<Integer, Integer> getStatus() {
+        return repository.getStatus();
+    }
+
+    public synchronized  void givePowerFromReserve(int n) {
+        map.put(n, 2);
+        fastQueue.add(n);
+        currentPower += 20;
+    }
+    public synchronized void divertPowerFromOtherCars(int n) {
+
+        Integer old = fastQueue.remove(0);
+        map.put(old, 1);
+        map.put(n, map.get(n) + 1);
+        slowQueue.add(old);
+        currentPower += 10;
+
     }
 }

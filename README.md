@@ -48,7 +48,7 @@ Zipped archive with the implementation and the documentation on how to call the 
 Please add any details about your ideas and considerations to this README and add it to the repository.
 
 
-##How to run 
+## How to run:
 1) run mvn clean install 
 2) cd target 
 3) java -jar ubicity-1.0-SNAPSHOT.jar 

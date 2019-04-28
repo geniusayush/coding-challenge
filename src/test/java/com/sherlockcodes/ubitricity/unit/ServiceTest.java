@@ -1,4 +1,4 @@
-package unit;
+package com.sherlockcodes.ubitricity.unit;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
