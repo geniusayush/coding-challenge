@@ -16,7 +16,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.LinkedBlockingQueue;
 
 @SpringBootApplication()
 @EnableSwagger2
@@ -24,7 +24,6 @@ import java.util.concurrent.CopyOnWriteArrayList;
 public class App {
     public static void main(String[] args) throws Exception {
         SpringApplication.run(App.class, args);
-
     }
 
     @Bean
@@ -59,13 +58,21 @@ public class App {
                 "https://www.apache.org/licenses/LICENSE-2.0");
         return apiInfo;
     }
+
     @Bean(name = "parkState")
-    public ParkState parkState(){
+    public ParkState parkState() {
         return new ParkState();
     }
+
     @Bean(name = "waitQ")
-    public ConcurrentLinkedQueue<Integer> waitQ(){
-        return new ConcurrentLinkedQueue<>();
+    public LinkedBlockingQueue<Integer> waitQ() {
+        return new LinkedBlockingQueue<>();
     }
+
+    @Bean(name = "powerExtractQ")
+    public LinkedBlockingQueue<Integer> powerQ() {
+        return new LinkedBlockingQueue<>();
+    }
+
 
 }

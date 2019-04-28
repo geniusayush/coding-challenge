@@ -1,5 +1,6 @@
 package com.sherlockcodes.ubitricity.repository;
 
+import com.sherlockcodes.ubitricity.enums.ChargeMode;
 import org.springframework.stereotype.Repository;
 
 import java.util.concurrent.ConcurrentHashMap;
@@ -27,9 +28,6 @@ public class StationRepository {
     public synchronized void markAsFastCharge(int n) {
         fastQueue.add(n);
     }
-
-
-
 
     public synchronized boolean canDivertPower() {
         if (fastQueue.size() == 0) return false;
@@ -65,5 +63,8 @@ public class StationRepository {
     public synchronized int unPlugVehicle(int n) {
         return map.put(n,0);
 
+    }
+    public void addVehicle(int index,ChargeMode power){
+        map.put(index,power.getValue());
     }
 }
